@@ -1,20 +1,5 @@
-import { Text, View, StyleSheet } from 'react-native';
-import { multiply } from 'react-native-better-dev-tools-internal';
-
-const result = multiply(3, 7);
+import { DevToolsBubble } from 'react-native-better-dev-tools-internal';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Result: {result}</Text>
-    </View>
-  );
+  return <DevToolsBubble />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
