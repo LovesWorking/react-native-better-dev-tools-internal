@@ -1,8 +1,22 @@
 import { useRef, useState } from 'react';
-import { Animated, PanResponder, View, type ViewStyle } from 'react-native';
+import {
+  Animated,
+  PanResponder,
+  View,
+  type ViewStyle,
+} from 'react-native';
 import { GripVerticalIcon } from '../icons/lucide-icons';
+import { UserStatus } from './components/UserStatus';
+import type { DevToolsBubbleProps } from './types';
 
-export function DevToolsBubble() {
+export function DevToolsBubble({
+  userRole,
+  // environment, // TODO: Add environment indicator
+  // hideEnvironment = false, // TODO: Implement environment visibility
+  hideUserStatus = false,
+  onStatusPress,
+  // onEnvironmentPress, // TODO: Implement environment press handler
+}: DevToolsBubbleProps) {
   const animatedPosition = useRef(new Animated.ValueXY()).current;
   const [isDragging, setIsDragging] = useState(false);
 
@@ -69,12 +83,22 @@ export function DevToolsBubble() {
     borderRightColor: 'rgba(75, 85, 99, 0.4)',
   };
 
+  const shouldShowUserStatus = !hideUserStatus && userRole;
+
   return (
     <Animated.View style={bubbleStyle}>
       <View style={containerStyle} {...panResponder.panHandlers}>
         <View style={dragHandleStyle}>
           <GripVerticalIcon size={12} color="rgba(156, 163, 175, 0.8)" />
         </View>
+        
+        {shouldShowUserStatus && (
+          <UserStatus
+            userRole={userRole}
+            onPress={onStatusPress}
+            isDragging={isDragging}
+          />
+        )}
       </View>
     </Animated.View>
   );
