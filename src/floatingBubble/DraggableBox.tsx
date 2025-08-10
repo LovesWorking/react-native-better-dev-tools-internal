@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Animated, PanResponder } from 'react-native';
+import { Animated, PanResponder, StyleSheet } from 'react-native';
 
 export function DraggableBox() {
   const animatedPosition = useRef(new Animated.ValueXY()).current;
@@ -22,16 +22,24 @@ export function DraggableBox() {
   return (
     <Animated.View
       {...panResponder.panHandlers}
-      style={{
-        width: 80,
-        height: 80,
-        backgroundColor: 'tomato',
-        borderRadius: 40,
-        transform: [
-          { translateX: animatedPosition.x },
-          { translateY: animatedPosition.y },
-        ],
-      }}
+      style={[
+        styles.box,
+        {
+          transform: [
+            { translateX: animatedPosition.x },
+            { translateY: animatedPosition.y },
+          ],
+        },
+      ]}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  box: {
+    width: 80,
+    height: 80,
+    backgroundColor: 'tomato',
+    borderRadius: 40,
+  },
+});
