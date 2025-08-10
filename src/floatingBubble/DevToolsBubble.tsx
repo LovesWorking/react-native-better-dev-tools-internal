@@ -7,12 +7,14 @@ import {
 } from 'react-native';
 import { GripVerticalIcon } from '../icons/lucide-icons';
 import { UserStatus } from './components/UserStatus';
+import { EnvironmentIndicator } from './components/EnvironmentIndicator';
+import { Divider } from './components/Divider';
 import type { DevToolsBubbleProps } from './types';
 
 export function DevToolsBubble({
   userRole,
-  // environment, // TODO: Add environment indicator
-  // hideEnvironment = false, // TODO: Implement environment visibility
+  environment,
+  hideEnvironment = false,
   hideUserStatus = false,
   onStatusPress,
   // onEnvironmentPress, // TODO: Implement environment press handler
@@ -83,7 +85,15 @@ export function DevToolsBubble({
     borderRightColor: 'rgba(75, 85, 99, 0.4)',
   };
 
+  const shouldShowEnvironment = !hideEnvironment && environment;
   const shouldShowUserStatus = !hideUserStatus && userRole;
+  const showDivider = shouldShowEnvironment && shouldShowUserStatus;
+
+  const contentStyle: ViewStyle = {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  };
 
   return (
     <Animated.View style={bubbleStyle}>
@@ -92,13 +102,21 @@ export function DevToolsBubble({
           <GripVerticalIcon size={12} color="rgba(156, 163, 175, 0.8)" />
         </View>
         
-        {shouldShowUserStatus && (
-          <UserStatus
-            userRole={userRole}
-            onPress={onStatusPress}
-            isDragging={isDragging}
-          />
-        )}
+        <View style={contentStyle}>
+          {shouldShowEnvironment && (
+            <EnvironmentIndicator environment={environment} />
+          )}
+          
+          {showDivider && <Divider />}
+          
+          {shouldShowUserStatus && (
+            <UserStatus
+              userRole={userRole}
+              onPress={onStatusPress}
+              isDragging={isDragging}
+            />
+          )}
+        </View>
       </View>
     </Animated.View>
   );
