@@ -31,6 +31,13 @@ export interface DevToolsBubbleProps {
   hideUserStatus?: boolean;
 
   /**
+   * Enable persisting bubble position to AsyncStorage (if available)
+   * When AsyncStorage is not installed, falls back to in-memory storage
+   * @default true
+   */
+  enablePositionPersistence?: boolean;
+
+  /**
    * Callback when user status is pressed
    */
   onStatusPress?: () => void;

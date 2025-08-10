@@ -1,6 +1,19 @@
 import { render } from '@testing-library/react-native';
 import { DevToolsBubble } from '../floatingBubble/DevToolsBubble';
 
+// Mock the storage helper to avoid async storage warnings in tests
+jest.mock('../floatingBubble/utils/storageHelper', () => ({
+  initializeStorage: jest.fn(),
+  setStorageItem: jest.fn().mockResolvedValue(undefined),
+  getStorageItem: jest.fn().mockResolvedValue(null),
+  removeStorageItem: jest.fn().mockResolvedValue(undefined),
+  isAsyncStorageAvailable: jest.fn().mockReturnValue(false),
+  STORAGE_KEYS: {
+    BUBBLE_POSITION_X: '@dev_tools_bubble_position_x',
+    BUBBLE_POSITION_Y: '@dev_tools_bubble_position_y',
+  },
+}));
+
 describe('DevToolsBubble', () => {
   it('should render without crashing', () => {
     const component = render(<DevToolsBubble />);
@@ -20,6 +33,38 @@ describe('DevToolsBubble', () => {
     const json = toJSON();
     
     expect(json?.type).toBe('View');
+  });
+
+  describe('Position Persistence', () => {
+    it('should enable position persistence by default', () => {
+      const { toJSON } = render(<DevToolsBubble />);
+      const json = toJSON();
+      
+      // Component should render normally with persistence enabled
+      expect(json).toBeDefined();
+    });
+
+    it('should render without position persistence when disabled', () => {
+      const { toJSON } = render(
+        <DevToolsBubble enablePositionPersistence={false} />
+      );
+      const json = toJSON();
+      
+      expect(json).toBeDefined();
+    });
+
+    it('should work with all props including persistence', () => {
+      const { getByText } = render(
+        <DevToolsBubble 
+          userRole="admin"
+          environment="local"
+          enablePositionPersistence={true}
+        />
+      );
+      
+      expect(getByText('Admin')).toBeTruthy();
+      expect(getByText('LOCAL')).toBeTruthy();
+    });
   });
 
   describe('Environment Props', () => {

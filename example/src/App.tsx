@@ -12,11 +12,11 @@ export default function App() {
     <View style={styles.container}>
       <DevToolsBubble
         userRole={userRole}
-        environment="dev"
+        environment="local"
         onStatusPress={() => console.log('Status pressed!')}
         onEnvironmentPress={() => console.log('Environment pressed!')}
       />
-      
+
       <View style={styles.buttonContainer}>
         <Button
           title="Set Admin"

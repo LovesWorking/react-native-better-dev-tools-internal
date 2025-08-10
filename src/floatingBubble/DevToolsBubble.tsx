@@ -1,14 +1,16 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import {
   Animated,
   PanResponder,
   View,
+  Dimensions,
   type ViewStyle,
 } from 'react-native';
 import { GripVerticalIcon } from '../icons/lucide-icons';
 import { UserStatus } from './components/UserStatus';
 import { EnvironmentIndicator } from './components/EnvironmentIndicator';
 import { Divider } from './components/Divider';
+import { usePositionPersistence } from './hooks/usePositionPersistence';
 import type { DevToolsBubbleProps } from './types';
 
 export function DevToolsBubble({
@@ -16,11 +18,32 @@ export function DevToolsBubble({
   environment,
   hideEnvironment = false,
   hideUserStatus = false,
+  enablePositionPersistence = true,
   onStatusPress,
   // onEnvironmentPress, // TODO: Implement environment press handler
 }: DevToolsBubbleProps) {
   const animatedPosition = useRef(new Animated.ValueXY()).current;
   const [isDragging, setIsDragging] = useState(false);
+  const [bubbleSize, setBubbleSize] = useState({ width: 100, height: 32 });
+
+  // Use position persistence hook
+  const { savePosition } = usePositionPersistence({
+    animatedPosition,
+    bubbleWidth: bubbleSize.width,
+    bubbleHeight: bubbleSize.height,
+    enabled: enablePositionPersistence,
+  });
+
+  // Set initial position from screen dimensions
+  useEffect(() => {
+    if (!enablePositionPersistence) {
+      const { width: screenWidth } = Dimensions.get('window');
+      animatedPosition.setValue({
+        x: screenWidth - bubbleSize.width - 20,
+        y: 100,
+      });
+    }
+  }, [enablePositionPersistence, animatedPosition, bubbleSize.width]);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -40,6 +63,11 @@ export function DevToolsBubble({
       onPanResponderRelease: () => {
         setIsDragging(false);
         animatedPosition.flattenOffset();
+        
+        // Save final position immediately
+        const currentX = (animatedPosition.x as any).__getValue();
+        const currentY = (animatedPosition.y as any).__getValue();
+        savePosition(currentX, currentY);
       },
       onPanResponderTerminate: () => {
         setIsDragging(false);
@@ -50,13 +78,8 @@ export function DevToolsBubble({
 
   const bubbleStyle: Animated.WithAnimatedObject<ViewStyle> = {
     position: 'absolute',
-    top: 100,
-    right: 20,
     zIndex: 1001,
-    transform: [
-      { translateX: animatedPosition.x },
-      { translateY: animatedPosition.y },
-    ],
+    transform: animatedPosition.getTranslateTransform(),
   };
 
   const containerStyle: ViewStyle = {
@@ -97,7 +120,14 @@ export function DevToolsBubble({
 
   return (
     <Animated.View style={bubbleStyle}>
-      <View style={containerStyle} {...panResponder.panHandlers}>
+      <View 
+        style={containerStyle} 
+        {...panResponder.panHandlers}
+        onLayout={(event) => {
+          const { width, height } = event.nativeEvent.layout;
+          setBubbleSize({ width, height });
+        }}
+      >
         <View style={dragHandleStyle}>
           <GripVerticalIcon size={12} color="rgba(156, 163, 175, 0.8)" />
         </View>
