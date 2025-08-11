@@ -31,10 +31,20 @@
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
+    "@shopify/flash-list": "*",
     "@tanstack/react-query": ">=5.0.0",
     "react": "*",
     "react-native": "*",
-    "react-native-better-dev-tools-internal": "*"
+    "react-native-better-dev-tools-internal": "*",
+    "react-native-gesture-handler": ">=2.0.0",
+    "react-native-reanimated": ">=3.0.0",
+    "react-native-svg": "*",
+    "superjson": ">=2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@react-native-async-storage/async-storage": {
+      "optional": true
+    }
   },
   "react-native-builder-bob": {
     "source": "src",

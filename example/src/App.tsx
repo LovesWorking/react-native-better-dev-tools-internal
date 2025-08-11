@@ -80,10 +80,10 @@ function OnlineStatusIndicator() {
 
 // Example component that uses React Query
 function ExampleDataFetcher() {
-  const { data, error, isLoading, refetch, isFetching } = useQuery({
-    queryKey: ['example'],
+  // Multiple queries for testing
+  const postQuery = useQuery({
+    queryKey: ['posts', 1],
     queryFn: async () => {
-      // Simulate API call
       const response = await fetch(
         'https://jsonplaceholder.typicode.com/posts/1'
       );
@@ -93,19 +93,71 @@ function ExampleDataFetcher() {
     retry: 2,
   });
 
+  // User query 
+  // @ts-ignore - for testing
+  const userQuery = useQuery({
+    queryKey: ['users', 1],
+    queryFn: async () => {
+      const response = await fetch(
+        'https://jsonplaceholder.typicode.com/users/1'
+      );
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    },
+    staleTime: 60000, // 1 minute
+  });
+
+  // Comments query (will be stale)
+  // @ts-ignore - for testing
+  const commentsQuery = useQuery({
+    queryKey: ['posts', 1, 'comments'],
+    queryFn: async () => {
+      const response = await fetch(
+        'https://jsonplaceholder.typicode.com/posts/1/comments'
+      );
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    },
+    staleTime: 0, // Always stale
+  });
+
+  // Todos query (disabled)
+  // @ts-ignore - for testing
+  const todosQuery = useQuery({
+    queryKey: ['todos'],
+    queryFn: async () => {
+      const response = await fetch(
+        'https://jsonplaceholder.typicode.com/todos?_limit=5'
+      );
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    },
+    enabled: false, // Disabled query
+  });
+
+  // Error query (will fail)
+  // @ts-ignore - for testing
+  const errorQuery = useQuery({
+    queryKey: ['error-test'],
+    queryFn: async () => {
+      throw new Error('This query intentionally fails for testing');
+    },
+    retry: 0,
+  });
+
   return (
     <View style={styles.dataContainer}>
       <Text style={styles.title}>React Query Test</Text>
-      {isLoading && <Text>Loading...</Text>}
-      {isFetching && !isLoading && <Text>Refetching...</Text>}
-      {error && <Text style={styles.error}>Error: {error.message}</Text>}
-      {data && (
+      {postQuery.isLoading && <Text>Loading post...</Text>}
+      {postQuery.isFetching && !postQuery.isLoading && <Text>Refetching...</Text>}
+      {postQuery.error && <Text style={styles.error}>Error: {postQuery.error.message}</Text>}
+      {postQuery.data && (
         <View>
-          <Text style={styles.dataTitle}>{data.title}</Text>
-          <Text style={styles.dataBody}>{data.body}</Text>
+          <Text style={styles.dataTitle}>{postQuery.data.title}</Text>
+          <Text style={styles.dataBody}>{postQuery.data.body}</Text>
         </View>
       )}
-      <Button title="Refetch" onPress={() => refetch()} color="#6366F1" />
+      <Button title="Refetch" onPress={() => postQuery.refetch()} color="#6366F1" />
     </View>
   );
 }
