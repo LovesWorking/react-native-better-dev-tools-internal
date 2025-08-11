@@ -1,7 +1,16 @@
 import { useEffect, useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 import type { Query, Mutation } from '@tanstack/react-query';
-import type { DevToolsPlugin, PluginContext } from 'react-native-better-dev-tools-internal';
+import type {
+  DevToolsPlugin,
+  PluginContext,
+} from 'react-native-better-dev-tools-internal';
 
 /**
  * Query snapshot for display
@@ -35,10 +44,10 @@ interface MutationSnapshot {
 /**
  * Compact view component for the bubble
  */
-function ReactQueryBubbleComponent({ 
+function ReactQueryBubbleComponent({
   context,
-  isDragging 
-}: { 
+  isDragging,
+}: {
   context: PluginContext;
   isDragging?: boolean;
 }) {
@@ -53,11 +62,11 @@ function ReactQueryBubbleComponent({
     const updateCounts = () => {
       const queries = queryClient.getQueryCache().getAll();
       const mutations = queryClient.getMutationCache().getAll();
-      
+
       setQueryCount(queries.length);
-      setActiveCount(queries.filter((q: Query) => 
-        q.state.fetchStatus === 'fetching'
-      ).length);
+      setActiveCount(
+        queries.filter((q: Query) => q.state.fetchStatus === 'fetching').length
+      );
       setMutationCount(mutations.length);
     };
 
@@ -104,17 +113,21 @@ function ReactQueryBubbleComponent({
 /**
  * Expanded modal view component
  */
-function ReactQueryModalComponent({ 
+function ReactQueryModalComponent({
   context,
-  onClose 
-}: { 
+  onClose,
+}: {
   context: PluginContext;
   onClose: () => void;
 }) {
   const [queries, setQueries] = useState<QuerySnapshot[]>([]);
   const [mutations, setMutations] = useState<MutationSnapshot[]>([]);
-  const [selectedQuery, setSelectedQuery] = useState<QuerySnapshot | null>(null);
-  const [activeTab, setActiveTab] = useState<'queries' | 'mutations'>('queries');
+  const [selectedQuery, setSelectedQuery] = useState<QuerySnapshot | null>(
+    null
+  );
+  const [activeTab, setActiveTab] = useState<'queries' | 'mutations'>(
+    'queries'
+  );
   const updateInterval = useRef<NodeJS.Timeout | null>(null);
   const { queryClient } = context;
 
@@ -123,29 +136,35 @@ function ReactQueryModalComponent({
 
     const updateData = () => {
       // Get query snapshots
-      const querySnapshots = queryClient.getQueryCache().getAll().map((query: Query) => ({
-        queryHash: query.queryHash,
-        queryKey: query.queryKey,
-        status: query.state.status,
-        fetchStatus: query.state.fetchStatus,
-        dataUpdatedAt: query.state.dataUpdatedAt,
-        errorUpdatedAt: query.state.errorUpdatedAt,
-        error: query.state.error,
-        isInvalidated: query.state.isInvalidated,
-        observerCount: query.getObserversCount?.() || 0
-      }));
+      const querySnapshots = queryClient
+        .getQueryCache()
+        .getAll()
+        .map((query: Query) => ({
+          queryHash: query.queryHash,
+          queryKey: query.queryKey,
+          status: query.state.status,
+          fetchStatus: query.state.fetchStatus,
+          dataUpdatedAt: query.state.dataUpdatedAt,
+          errorUpdatedAt: query.state.errorUpdatedAt,
+          error: query.state.error,
+          isInvalidated: query.state.isInvalidated,
+          observerCount: query.getObserversCount?.() || 0,
+        }));
 
       // Get mutation snapshots
-      const mutationSnapshots = queryClient.getMutationCache().getAll().map((mutation: Mutation, index: number) => ({
-        mutationId: index,
-        mutationKey: mutation.options?.mutationKey,
-        status: mutation.state.status,
-        isPaused: mutation.state.isPaused,
-        failureCount: mutation.state.failureCount || 0,
-        submittedAt: mutation.state.submittedAt,
-        variables: mutation.state.variables,
-        error: mutation.state.error
-      }));
+      const mutationSnapshots = queryClient
+        .getMutationCache()
+        .getAll()
+        .map((mutation: Mutation, index: number) => ({
+          mutationId: index,
+          mutationKey: mutation.options?.mutationKey,
+          status: mutation.state.status,
+          isPaused: mutation.state.isPaused,
+          failureCount: mutation.state.failureCount || 0,
+          submittedAt: mutation.state.submittedAt,
+          variables: mutation.state.variables,
+          error: mutation.state.error,
+        }));
 
       setQueries(querySnapshots);
       setMutations(mutationSnapshots);
@@ -203,7 +222,12 @@ function ReactQueryModalComponent({
           style={[styles.tab, activeTab === 'queries' && styles.activeTab]}
           onPress={() => setActiveTab('queries')}
         >
-          <Text style={[styles.tabText, activeTab === 'queries' && styles.activeTabText]}>
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === 'queries' && styles.activeTabText,
+            ]}
+          >
             Queries ({queries.length})
           </Text>
         </TouchableOpacity>
@@ -211,7 +235,12 @@ function ReactQueryModalComponent({
           style={[styles.tab, activeTab === 'mutations' && styles.activeTab]}
           onPress={() => setActiveTab('mutations')}
         >
-          <Text style={[styles.tabText, activeTab === 'mutations' && styles.activeTabText]}>
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === 'mutations' && styles.activeTabText,
+            ]}
+          >
             Mutations ({mutations.length})
           </Text>
         </TouchableOpacity>
@@ -220,26 +249,41 @@ function ReactQueryModalComponent({
       <ScrollView style={styles.contentContainer}>
         {activeTab === 'queries' ? (
           <View>
-            <TouchableOpacity onPress={handleClearCache} style={styles.actionButton}>
+            <TouchableOpacity
+              onPress={handleClearCache}
+              style={styles.actionButton}
+            >
               <Text style={styles.actionButtonText}>Clear All Cache</Text>
             </TouchableOpacity>
-            
+
             {queries.map((query, index) => (
               <TouchableOpacity
                 key={`${query.queryHash}-${index}`}
                 style={styles.queryItem}
-                onPress={() => setSelectedQuery(selectedQuery?.queryHash === query.queryHash ? null : query)}
+                onPress={() =>
+                  setSelectedQuery(
+                    selectedQuery?.queryHash === query.queryHash ? null : query
+                  )
+                }
               >
                 <View style={styles.queryHeader}>
-                  <Text style={styles.queryKey}>{JSON.stringify(query.queryKey)}</Text>
-                  <View style={[styles.statusBadge, { backgroundColor: getStatusColor(query.status) }]}>
+                  <Text style={styles.queryKey}>
+                    {JSON.stringify(query.queryKey)}
+                  </Text>
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      { backgroundColor: getStatusColor(query.status) },
+                    ]}
+                  >
                     <Text style={styles.statusText}>{query.status}</Text>
                   </View>
                 </View>
-                
+
                 <View style={styles.queryMeta}>
                   <Text style={styles.metaText}>
-                    Fetch: {query.fetchStatus} | Observers: {query.observerCount}
+                    Fetch: {query.fetchStatus} | Observers:{' '}
+                    {query.observerCount}
                   </Text>
                   {query.isInvalidated && (
                     <Text style={styles.invalidatedText}>INVALIDATED</Text>
@@ -277,20 +321,30 @@ function ReactQueryModalComponent({
               <View key={mutation.mutationId} style={styles.mutationItem}>
                 <View style={styles.queryHeader}>
                   <Text style={styles.queryKey}>
-                    {mutation.mutationKey ? JSON.stringify(mutation.mutationKey) : `Mutation #${mutation.mutationId}`}
+                    {mutation.mutationKey
+                      ? JSON.stringify(mutation.mutationKey)
+                      : `Mutation #${mutation.mutationId}`}
                   </Text>
-                  <View style={[styles.statusBadge, { backgroundColor: getStatusColor(mutation.status) }]}>
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      { backgroundColor: getStatusColor(mutation.status) },
+                    ]}
+                  >
                     <Text style={styles.statusText}>{mutation.status}</Text>
                   </View>
                 </View>
-                
+
                 {mutation.failureCount > 0 && (
-                  <Text style={styles.errorText}>Failed {mutation.failureCount} times</Text>
+                  <Text style={styles.errorText}>
+                    Failed {mutation.failureCount} times
+                  </Text>
                 )}
-                
+
                 {mutation.variables !== undefined && (
                   <Text style={styles.metaText}>
-                    Variables: {JSON.stringify(mutation.variables).substring(0, 100)}...
+                    Variables:{' '}
+                    {JSON.stringify(mutation.variables).substring(0, 100)}...
                   </Text>
                 )}
               </View>
@@ -307,11 +361,16 @@ function ReactQueryModalComponent({
  */
 function getStatusColor(status: string): string {
   switch (status) {
-    case 'success': return '#10B981';
-    case 'error': return '#EF4444';
-    case 'pending': return '#F59E0B';
-    case 'loading': return '#3B82F6';
-    default: return '#6B7280';
+    case 'success':
+      return '#10B981';
+    case 'error':
+      return '#EF4444';
+    case 'pending':
+      return '#F59E0B';
+    case 'loading':
+      return '#3B82F6';
+    default:
+      return '#6B7280';
   }
 }
 
@@ -322,16 +381,16 @@ function getStatusColor(status: string): string {
 const reactQueryPlugin: DevToolsPlugin = {
   id: 'react-query',
   name: 'React Query DevTools',
-  
+
   component: ReactQueryBubbleComponent,
   modalComponent: ReactQueryModalComponent,
-  
+
   // React Query is a peer dependency, so it's always available
   checkAvailability: () => true,
-  
+
   onMount: async (context) => {
     console.log('[React Query Plugin] Mounted');
-    
+
     if (!context.queryClient) {
       console.warn('[React Query Plugin] No QueryClient provided');
       return;
@@ -343,7 +402,10 @@ const reactQueryPlugin: DevToolsPlugin = {
 
     const unsubQuery = queryCache.subscribe((event: any) => {
       if (event?.type === 'added' || event?.type === 'removed') {
-        console.log(`[React Query Plugin] Query ${event.type}:`, event.query?.queryKey);
+        console.log(
+          `[React Query Plugin] Query ${event.type}:`,
+          event.query?.queryKey
+        );
       }
     });
 
@@ -354,25 +416,25 @@ const reactQueryPlugin: DevToolsPlugin = {
     });
 
     // Store unsubscribe functions for cleanup
-    await context.storage.set('react-query:subscriptions', { 
+    await context.storage.set('react-query:subscriptions', {
       queryUnsub: unsubQuery,
-      mutationUnsub: unsubMutation 
+      mutationUnsub: unsubMutation,
     });
   },
-  
+
   onUnmount: async () => {
     console.log('[React Query Plugin] Unmounted');
     // Subscriptions are cleaned up automatically
   },
-  
+
   defaultConfig: {
     enabled: true,
     settings: {
       showInBubble: true,
       updateInterval: 1000,
-      maxQueriesToShow: 50
-    }
-  }
+      maxQueriesToShow: 50,
+    },
+  },
 };
 
 const styles = StyleSheet.create({

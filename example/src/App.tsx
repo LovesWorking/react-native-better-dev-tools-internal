@@ -122,7 +122,7 @@ function AppContent() {
     useState(true);
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={{ flex: 1 }}>
       <DevToolsBubbleWithPlugins
         userRole={userRole}
         environment={environment}
@@ -135,135 +135,136 @@ function AppContent() {
         queryClient={queryClient}
         plugins={[wifiTogglePlugin, reactQueryPlugin]}
       />
+      <ScrollView style={styles.container}>
+        <OnlineStatusIndicator />
+        <Button
+          title="Toggle WiFi"
+          onPress={() => {
+            const currentState = onlineManager.isOnline();
+            const newState = !currentState;
+            onlineManager.setOnline(newState);
+          }}
+          color="#6366F1"
+        />
+        <ExampleDataFetcher />
 
-      <OnlineStatusIndicator />
-      <Button
-        title="Toggle WiFi"
-        onPress={() => {
-          const currentState = onlineManager.isOnline();
-          const newState = !currentState;
-          onlineManager.setOnline(newState);
-        }}
-        color="#6366F1"
-      />
-      <ExampleDataFetcher />
+        <View style={styles.settingsContainer}>
+          <Text style={styles.mainTitle}>Bubble Visibility Settings</Text>
 
-      <View style={styles.settingsContainer}>
-        <Text style={styles.mainTitle}>Bubble Visibility Settings</Text>
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Show Environment</Text>
+            <Switch
+              value={!hideEnvironment}
+              onValueChange={(value) => setHideEnvironment(!value)}
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
+              thumbColor={!hideEnvironment ? '#f5dd4b' : '#f4f3f4'}
+            />
+          </View>
 
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Show Environment</Text>
-          <Switch
-            value={!hideEnvironment}
-            onValueChange={(value) => setHideEnvironment(!value)}
-            trackColor={{ false: '#767577', true: '#81b0ff' }}
-            thumbColor={!hideEnvironment ? '#f5dd4b' : '#f4f3f4'}
-          />
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Show User Status</Text>
+            <Switch
+              value={!hideUserStatus}
+              onValueChange={(value) => setHideUserStatus(!value)}
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
+              thumbColor={!hideUserStatus ? '#f5dd4b' : '#f4f3f4'}
+            />
+          </View>
+
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Show WiFi Toggle</Text>
+            <Switch
+              value={!hideWifiToggle}
+              onValueChange={(value) => setHideWifiToggle(!value)}
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
+              thumbColor={!hideWifiToggle ? '#f5dd4b' : '#f4f3f4'}
+            />
+          </View>
+
+          <View style={styles.settingRow}>
+            <Text style={styles.settingLabel}>Position Persistence</Text>
+            <Switch
+              value={enablePositionPersistence}
+              onValueChange={setEnablePositionPersistence}
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
+              thumbColor={enablePositionPersistence ? '#f5dd4b' : '#f4f3f4'}
+            />
+          </View>
         </View>
 
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Show User Status</Text>
-          <Switch
-            value={!hideUserStatus}
-            onValueChange={(value) => setHideUserStatus(!value)}
-            trackColor={{ false: '#767577', true: '#81b0ff' }}
-            thumbColor={!hideUserStatus ? '#f5dd4b' : '#f4f3f4'}
-          />
-        </View>
+        <View style={styles.buttonContainer}>
+          <Text style={styles.sectionTitle}>User Role</Text>
+          <View style={styles.buttonRow}>
+            <Button
+              title="Admin"
+              onPress={() => setUserRole('admin')}
+              color="#10B981"
+            />
+            <Button
+              title="Internal"
+              onPress={() => setUserRole('internal')}
+              color="#6366F1"
+            />
+            <Button
+              title="User"
+              onPress={() => setUserRole('user')}
+              color="#6B7280"
+            />
+          </View>
 
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Show WiFi Toggle</Text>
-          <Switch
-            value={!hideWifiToggle}
-            onValueChange={(value) => setHideWifiToggle(!value)}
-            trackColor={{ false: '#767577', true: '#81b0ff' }}
-            thumbColor={!hideWifiToggle ? '#f5dd4b' : '#f4f3f4'}
-          />
-        </View>
+          <Text style={styles.sectionTitle}>Environment</Text>
+          <View style={styles.buttonRow}>
+            <Button
+              title="Local"
+              onPress={() => setEnvironment('local')}
+              color="#06B6D4"
+            />
+            <Button
+              title="Dev"
+              onPress={() => setEnvironment('dev')}
+              color="#F97316"
+            />
+            <Button
+              title="QA"
+              onPress={() => setEnvironment('qa')}
+              color="#8B5CF6"
+            />
+            <Button
+              title="Staging"
+              onPress={() => setEnvironment('staging')}
+              color="#10B981"
+            />
+            <Button
+              title="Prod"
+              onPress={() => setEnvironment('prod')}
+              color="#DC2626"
+            />
+          </View>
 
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Position Persistence</Text>
-          <Switch
-            value={enablePositionPersistence}
-            onValueChange={setEnablePositionPersistence}
-            trackColor={{ false: '#767577', true: '#81b0ff' }}
-            thumbColor={enablePositionPersistence ? '#f5dd4b' : '#f4f3f4'}
-          />
+          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <View style={styles.buttonRow}>
+            <Button
+              title="Hide All"
+              onPress={() => {
+                setHideEnvironment(true);
+                setHideUserStatus(true);
+                setHideWifiToggle(true);
+              }}
+              color="#EF4444"
+            />
+            <Button
+              title="Show All"
+              onPress={() => {
+                setHideEnvironment(false);
+                setHideUserStatus(false);
+                setHideWifiToggle(false);
+              }}
+              color="#10B981"
+            />
+          </View>
         </View>
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <Text style={styles.sectionTitle}>User Role</Text>
-        <View style={styles.buttonRow}>
-          <Button
-            title="Admin"
-            onPress={() => setUserRole('admin')}
-            color="#10B981"
-          />
-          <Button
-            title="Internal"
-            onPress={() => setUserRole('internal')}
-            color="#6366F1"
-          />
-          <Button
-            title="User"
-            onPress={() => setUserRole('user')}
-            color="#6B7280"
-          />
-        </View>
-
-        <Text style={styles.sectionTitle}>Environment</Text>
-        <View style={styles.buttonRow}>
-          <Button
-            title="Local"
-            onPress={() => setEnvironment('local')}
-            color="#06B6D4"
-          />
-          <Button
-            title="Dev"
-            onPress={() => setEnvironment('dev')}
-            color="#F97316"
-          />
-          <Button
-            title="QA"
-            onPress={() => setEnvironment('qa')}
-            color="#8B5CF6"
-          />
-          <Button
-            title="Staging"
-            onPress={() => setEnvironment('staging')}
-            color="#10B981"
-          />
-          <Button
-            title="Prod"
-            onPress={() => setEnvironment('prod')}
-            color="#DC2626"
-          />
-        </View>
-
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
-        <View style={styles.buttonRow}>
-          <Button
-            title="Hide All"
-            onPress={() => {
-              setHideEnvironment(true);
-              setHideUserStatus(true);
-              setHideWifiToggle(true);
-            }}
-            color="#EF4444"
-          />
-          <Button
-            title="Show All"
-            onPress={() => {
-              setHideEnvironment(false);
-              setHideUserStatus(false);
-              setHideWifiToggle(false);
-            }}
-            color="#10B981"
-          />
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
