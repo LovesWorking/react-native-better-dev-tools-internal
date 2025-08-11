@@ -1,0 +1,59 @@
+{
+  "name": "@react-native-better-dev-tools/plugin-wifi-toggle",
+  "version": "0.1.0",
+  "description": "WiFi toggle plugin for React Native Better Dev Tools",
+  "main": "./lib/module/index.js",
+  "types": "./lib/typescript/index.d.ts",
+  "exports": {
+    ".": {
+      "source": "./src/index.tsx",
+      "types": "./lib/typescript/index.d.ts",
+      "default": "./lib/module/index.js"
+    }
+  },
+  "files": [
+    "src",
+    "lib",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "scripts": {
+    "prepare": "bob build",
+    "clean": "del-cli lib",
+    "typecheck": "tsc"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.12",
+    "react": "19.0.0",
+    "react-native": "0.79.5",
+    "react-native-builder-bob": "^0.40.13",
+    "react-native-svg": "^15.12.1",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": ">=5.0.0",
+    "react": "*",
+    "react-native": "*",
+    "react-native-better-dev-tools-internal": "*",
+    "react-native-svg": ">=15.0.0"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  }
+}

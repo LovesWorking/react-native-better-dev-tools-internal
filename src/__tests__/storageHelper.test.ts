@@ -8,12 +8,15 @@ import {
 
 // Mock console methods
 const originalWarn = console.warn;
+const originalInfo = console.info;
 beforeEach(() => {
   console.warn = jest.fn();
+  console.info = jest.fn();
 });
 
 afterEach(() => {
   console.warn = originalWarn;
+  console.info = originalInfo;
 });
 
 describe('Storage Helper', () => {
@@ -22,8 +25,8 @@ describe('Storage Helper', () => {
       expect(() => initializeStorage()).not.toThrow();
     });
 
-    it('should show warning when AsyncStorage is not available', () => {
-      // Reset the module to ensure warning is shown
+    it('should show info message when AsyncStorage is not available', () => {
+      // Reset the module to ensure message is shown
       jest.resetModules();
       const storageModule = require('../floatingBubble/utils/storageHelper');
       
@@ -31,8 +34,8 @@ describe('Storage Helper', () => {
       
       // Check if AsyncStorage is available (it shouldn't be in test environment)
       if (!storageModule.isAsyncStorageAvailable()) {
-        expect(console.warn).toHaveBeenCalledWith(
-          expect.stringContaining('AsyncStorage not found')
+        expect(console.info).toHaveBeenCalledWith(
+          expect.stringContaining('Position persistence disabled')
         );
       }
     });

@@ -2742,6 +2742,42 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-better-dev-tools/plugin-react-query@*, @react-native-better-dev-tools/plugin-react-query@workspace:packages/plugin-react-query":
+  version: 0.0.0-use.local
+  resolution: "@react-native-better-dev-tools/plugin-react-query@workspace:packages/plugin-react-query"
+  dependencies:
+    "@types/react": ^19.0.12
+    react: 19.0.0
+    react-native: 0.79.5
+    react-native-builder-bob: ^0.40.13
+    typescript: ^5.8.3
+  peerDependencies:
+    "@tanstack/react-query": ">=5.0.0"
+    react: "*"
+    react-native: "*"
+    react-native-better-dev-tools-internal: "*"
+  languageName: unknown
+  linkType: soft
+
+"@react-native-better-dev-tools/plugin-wifi-toggle@*, @react-native-better-dev-tools/plugin-wifi-toggle@workspace:packages/plugin-wifi-toggle":
+  version: 0.0.0-use.local
+  resolution: "@react-native-better-dev-tools/plugin-wifi-toggle@workspace:packages/plugin-wifi-toggle"
+  dependencies:
+    "@types/react": ^19.0.12
+    react: 19.0.0
+    react-native: 0.79.5
+    react-native-builder-bob: ^0.40.13
+    react-native-svg: ^15.12.1
+    typescript: ^5.8.3
+  peerDependencies:
+    "@tanstack/react-query": ">=5.0.0"
+    react: "*"
+    react-native: "*"
+    react-native-better-dev-tools-internal: "*"
+    react-native-svg: ">=15.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@react-native/assets-registry@npm:0.79.5":
   version: 0.79.5
   resolution: "@react-native/assets-registry@npm:0.79.5"
@@ -3084,6 +3120,61 @@ __metadata:
   dependencies:
     "@sinonjs/commons": ^3.0.0
   checksum: 614d30cb4d5201550c940945d44c9e0b6d64a888ff2cd5b357f95ad6721070d6b8839cd10e15b76bf5e14af0bcc1d8f9ec00d49a46318f1f669a4bec1d7f3148
+  languageName: node
+  linkType: hard
+
+"@socket.io/component-emitter@npm:~3.1.0":
+  version: 3.1.2
+  resolution: "@socket.io/component-emitter@npm:3.1.2"
+  checksum: 89888f00699eb34e3070624eb7b8161fa29f064aeb1389a48f02195d55dd7c52a504e52160016859f6d6dffddd54324623cdd47fd34b3d46f9ed96c18c456edc
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-async-storage-persister@npm:^5.83.1":
+  version: 5.83.1
+  resolution: "@tanstack/query-async-storage-persister@npm:5.83.1"
+  dependencies:
+    "@tanstack/query-persist-client-core": 5.83.1
+  checksum: 486c2b1a463523fa89a3f7070b0e426c94c410daaed5b557f06c323ecbc76c7df78e20b33a102c60dafb50d9c6fddddf5bec9ca9c3a6b22b423017e41540e3d1
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-core@npm:5.83.1":
+  version: 5.83.1
+  resolution: "@tanstack/query-core@npm:5.83.1"
+  checksum: 0c4a2f604de28fd8b97b07ce7ea119c52a8bf7ded877dfd6c2ebff14090d7a66aed4689cf53d78d432733f3845e0c0f9928abbe77d193a55fd92adf6e6ef8986
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-persist-client-core@npm:5.83.1":
+  version: 5.83.1
+  resolution: "@tanstack/query-persist-client-core@npm:5.83.1"
+  dependencies:
+    "@tanstack/query-core": 5.83.1
+  checksum: 6ac99a9b31ab644c790da3e5d6ea247b0c2a37f49fb9886e5bcccc7f3f0a59f6741fdeb0a51da47676fcd9c7f253c6426743555a396fc259a513e285f67e2479
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query-persist-client@npm:^5.84.2":
+  version: 5.84.2
+  resolution: "@tanstack/react-query-persist-client@npm:5.84.2"
+  dependencies:
+    "@tanstack/query-persist-client-core": 5.83.1
+  peerDependencies:
+    "@tanstack/react-query": ^5.84.2
+    react: ^18 || ^19
+  checksum: e3846c90d812abb9431d54135b986e5e47554bdd5bc62cb9da0fa6ce9970fc413d1ce896d0b742d3bb32322f7e992535cdedb4600f8c4b1255eb93fc5083ccaf
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.84.2":
+  version: 5.84.2
+  resolution: "@tanstack/react-query@npm:5.84.2"
+  dependencies:
+    "@tanstack/query-core": 5.83.1
+  peerDependencies:
+    react: ^18 || ^19
+  checksum: 1284bced0c7acf74a443b359f94cb4700a2ec32dbd2a2a6f9e877eefe0b40e0c76d1cb5bfa2fe04aadac1ba7eae156e4f58b9c6ab70151f6c08492f4c32d4329
   languageName: node
   linkType: hard
 
@@ -5117,6 +5208,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"debug@npm:~4.3.1, debug@npm:~4.3.2":
+  version: 4.3.7
+  resolution: "debug@npm:4.3.7"
+  dependencies:
+    ms: ^2.1.3
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 822d74e209cd910ef0802d261b150314bbcf36c582ccdbb3e70f0894823c17e49a50d3e66d96b633524263975ca16b6a833f3e3b7e030c157169a5fabac63160
+  languageName: node
+  linkType: hard
+
 "decamelize-keys@npm:^1.1.0":
   version: 1.1.1
   resolution: "decamelize-keys@npm:1.1.1"
@@ -5529,6 +5632,26 @@ __metadata:
   dependencies:
     once: ^1.4.0
   checksum: 1e0cfa6e7f49887544e03314f9dfc56a8cb6dde910cbb445983ecc2ff426fc05946df9d75d8a21a3a64f2cecfe1bf88f773952029f46756b2ed64a24e95b1fb8
+  languageName: node
+  linkType: hard
+
+"engine.io-client@npm:~6.6.1":
+  version: 6.6.3
+  resolution: "engine.io-client@npm:6.6.3"
+  dependencies:
+    "@socket.io/component-emitter": ~3.1.0
+    debug: ~4.3.1
+    engine.io-parser: ~5.2.1
+    ws: ~8.17.1
+    xmlhttprequest-ssl: ~2.1.1
+  checksum: 90aee334e8c699ab471d4eebc360afa0d59f763f47fee7ba6eaaf0610819ae46025a5f2205908ef031e82915a0590c481655cc84e429e43afaf8b12617c21221
+  languageName: node
+  linkType: hard
+
+"engine.io-parser@npm:~5.2.1":
+  version: 5.2.3
+  resolution: "engine.io-parser@npm:5.2.3"
+  checksum: a76d998b794ce8bbcade833064d949715781fdb9e9cf9b33ecf617d16355ddfd7772f12bb63aaec0f497d63266c6db441129c5aa24c60582270f810c696a6cf8
   languageName: node
   linkType: hard
 
@@ -10786,6 +10909,11 @@ __metadata:
     "@babel/core": ^7.20.0
     "@expo/metro-runtime": ~5.0.4
     "@react-native-async-storage/async-storage": ^2.2.0
+    "@react-native-better-dev-tools/plugin-react-query": "*"
+    "@react-native-better-dev-tools/plugin-wifi-toggle": "*"
+    "@tanstack/query-async-storage-persister": ^5.83.1
+    "@tanstack/react-query": ^5.84.2
+    "@tanstack/react-query-persist-client": ^5.84.2
     expo: ~53.0.20
     expo-status-bar: ~2.2.3
     react: 19.0.0
@@ -10793,7 +10921,9 @@ __metadata:
     react-native: 0.79.5
     react-native-builder-bob: ^0.40.13
     react-native-monorepo-config: ^0.1.9
+    react-native-svg: ^15.12.1
     react-native-web: ~0.20.0
+    react-query-external-sync: ^2.2.3
   languageName: unknown
   linkType: soft
 
@@ -10808,6 +10938,7 @@ __metadata:
     "@react-native/babel-preset": 0.78.2
     "@react-native/eslint-config": ^0.78.0
     "@release-it/conventional-changelog": ^9.0.2
+    "@tanstack/react-query": ^5.84.2
     "@testing-library/react-native": ^13.2.2
     "@types/jest": ^29.5.5
     "@types/react": ^19.0.12
@@ -10821,12 +10952,21 @@ __metadata:
     react-native: 0.79.5
     react-native-builder-bob: ^0.40.13
     react-native-svg: ^15.12.1
+    react-query-external-sync: ^2.2.3
     react-test-renderer: 19.0.0
     release-it: ^17.10.0
+    socket.io-client: ^4.8.1
     typescript: ^5.8.3
   peerDependencies:
+    "@react-native-async-storage/async-storage": ">=1.0.0"
+    "@tanstack/react-query": ">=5.0.0"
     react: "*"
     react-native: "*"
+  peerDependenciesMeta:
+    "@react-native-async-storage/async-storage":
+      optional: true
+    "@tanstack/react-query":
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -10974,6 +11114,24 @@ __metadata:
   bin:
     react-native: cli.js
   checksum: 6db9368ca97ad2b4b2326d63edcb4ac151d77ad564afb3cbf1ae5caf8f169fee02bc83cb2411fc8b3e42f9d1ef08b2ac937a4260f67187829bed310e5d431988
+  languageName: node
+  linkType: hard
+
+"react-query-external-sync@npm:^2.2.3":
+  version: 2.2.3
+  resolution: "react-query-external-sync@npm:2.2.3"
+  peerDependencies:
+    "@tanstack/react-query": ^4.0.0 || ^5.0.0
+    react: ^18 || ^19
+    socket.io-client: "*"
+  peerDependenciesMeta:
+    "@react-native-async-storage/async-storage":
+      optional: true
+    react-native:
+      optional: true
+    socket.io-client:
+      optional: true
+  checksum: 3cf1af9c2b9f12b81d98e087a9b7b156caba7a5b8206d60c3c5b2a455508fd005b4b3244e1632ab141b65978ebecbf23fd75452dd4f9464dfec4785bd691fefd
   languageName: node
   linkType: hard
 
@@ -11840,6 +11998,28 @@ __metadata:
   version: 4.2.0
   resolution: "smart-buffer@npm:4.2.0"
   checksum: b5167a7142c1da704c0e3af85c402002b597081dd9575031a90b4f229ca5678e9a36e8a374f1814c8156a725d17008ae3bde63b92f9cfd132526379e580bec8b
+  languageName: node
+  linkType: hard
+
+"socket.io-client@npm:^4.8.1":
+  version: 4.8.1
+  resolution: "socket.io-client@npm:4.8.1"
+  dependencies:
+    "@socket.io/component-emitter": ~3.1.0
+    debug: ~4.3.2
+    engine.io-client: ~6.6.1
+    socket.io-parser: ~4.2.4
+  checksum: 0ac31d224c7a8567d95bb0522214cc0d3dfa1fbf6de38e63d9aa8e806526e27381d06a527d39e02f173199c48ad112737107148d2e60e1c48a6a8e15391dce8d
+  languageName: node
+  linkType: hard
+
+"socket.io-parser@npm:~4.2.4":
+  version: 4.2.4
+  resolution: "socket.io-parser@npm:4.2.4"
+  dependencies:
+    "@socket.io/component-emitter": ~3.1.0
+    debug: ~4.3.1
+  checksum: 61540ef99af33e6a562b9effe0fad769bcb7ec6a301aba5a64b3a8bccb611a0abdbe25f469933ab80072582006a78ca136bf0ad8adff9c77c9953581285e2263
   languageName: node
   linkType: hard
 
@@ -13211,6 +13391,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ws@npm:~8.17.1":
+  version: 8.17.1
+  resolution: "ws@npm:8.17.1"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 442badcce1f1178ec87a0b5372ae2e9771e07c4929a3180321901f226127f252441e8689d765aa5cfba5f50ac60dd830954afc5aeae81609aefa11d3ddf5cecf
+  languageName: node
+  linkType: hard
+
 "xcode@npm:^3.0.1":
   version: 3.0.1
   resolution: "xcode@npm:3.0.1"
@@ -13249,6 +13444,13 @@ __metadata:
   version: 11.0.1
   resolution: "xmlbuilder@npm:11.0.1"
   checksum: 7152695e16f1a9976658215abab27e55d08b1b97bca901d58b048d2b6e106b5af31efccbdecf9b07af37c8377d8e7e821b494af10b3a68b0ff4ae60331b415b0
+  languageName: node
+  linkType: hard
+
+"xmlhttprequest-ssl@npm:~2.1.1":
+  version: 2.1.2
+  resolution: "xmlhttprequest-ssl@npm:2.1.2"
+  checksum: f8ecb894301dd024804669245888b3d5ceed2dfcdb4fddb0e38d811a07a2e3c227535f29b269eccf92005819457db3f270d2ff98df516abf95cfad1b9759512d
   languageName: node
   linkType: hard
 

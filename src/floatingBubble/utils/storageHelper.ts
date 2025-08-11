@@ -1,6 +1,9 @@
 /**
  * Storage helper with optional AsyncStorage support
  * Tries to import AsyncStorage if available, falls back to in-memory storage
+ * 
+ * This is an optional peer dependency - the package will work without it,
+ * but position persistence across app restarts will be disabled.
  */
 
 type AsyncStorageType = {
@@ -10,29 +13,37 @@ type AsyncStorageType = {
 };
 
 let AsyncStorage: AsyncStorageType | null = null;
-let hasWarned = false;
-
-// Try to import AsyncStorage dynamically
-try {
-  const asyncStorageModule = require('@react-native-async-storage/async-storage');
-  AsyncStorage = asyncStorageModule.default || asyncStorageModule;
-} catch {
-  // AsyncStorage not available - will use fallback
-}
+let hasLoggedInfo = false;
+let hasInitialized = false;
 
 // Fallback in-memory storage for when AsyncStorage is not available
 const memoryStorage: Record<string, string> = {};
 
 /**
- * Initialize storage and show warning if AsyncStorage is not available
+ * Initialize storage
+ * This is called automatically when needed
  */
 export function initializeStorage(): void {
-  if (!AsyncStorage && !hasWarned) {
-    console.warn(
-      '[DevToolsBubble] AsyncStorage not found. Bubble position will not persist across app restarts.\n' +
-      'To enable persistence, install: npm install @react-native-async-storage/async-storage'
-    );
-    hasWarned = true;
+  if (hasInitialized) return;
+  hasInitialized = true;
+
+  try {
+    const asyncStorageModule = require('@react-native-async-storage/async-storage');
+    AsyncStorage = asyncStorageModule.default || asyncStorageModule;
+    
+    // Only log in development
+    if (__DEV__ && !hasLoggedInfo) {
+      console.info('[DevToolsBubble] AsyncStorage detected - position persistence enabled');
+      hasLoggedInfo = true;
+    }
+  } catch {
+    // AsyncStorage not available - will use fallback
+    if (__DEV__ && !hasLoggedInfo) {
+      console.info(
+        '[DevToolsBubble] Position persistence disabled (optional dependency @react-native-async-storage/async-storage not installed)'
+      );
+      hasLoggedInfo = true;
+    }
   }
 }
 

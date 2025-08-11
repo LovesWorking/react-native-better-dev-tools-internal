@@ -1,3 +1,6 @@
+// Import type only - removed at runtime
+import type { QueryClient } from '@tanstack/react-query';
+
 export type UserRole = 'admin' | 'internal' | 'user';
 
 export type Environment = 'local' | 'dev' | 'qa' | 'staging' | 'prod';
@@ -31,6 +34,13 @@ export interface DevToolsBubbleProps {
   hideUserStatus?: boolean;
 
   /**
+   * Hide the WiFi toggle button in the bubble
+   * Only works when @tanstack/react-query is installed
+   * @default false
+   */
+  hideWifiToggle?: boolean;
+
+  /**
    * Enable persisting bubble position to AsyncStorage (if available)
    * When AsyncStorage is not installed, falls back to in-memory storage
    * @default true
@@ -46,4 +56,11 @@ export interface DevToolsBubbleProps {
    * Callback when environment indicator is pressed
    */
   onEnvironmentPress?: () => void;
+
+  /**
+   * QueryClient instance from @tanstack/react-query
+   * Required for WiFi toggle functionality
+   * Pass this to enable toggling React Query's online/offline state
+   */
+  queryClient?: QueryClient;
 }

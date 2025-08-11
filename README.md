@@ -1,26 +1,66 @@
-# react-native-better-dev-tools-internal
+# React Native Better Dev Tools
 
-internal dev tools for react native projects for local and prod
+A powerful, extensible floating dev tools bubble for React Native applications with a plugin architecture.
 
-## Installation
+## Features
 
+- 🎯 **Floating Bubble Interface** - Draggable, always-accessible dev tools
+- 🔌 **Plugin Architecture** - Extend with custom dev tools
+- 📦 **Monorepo Structure** - Each plugin is a separate package
+- 🔥 **Hot Reload** - Instant updates during development
+- 📝 **TypeScript** - Full type safety
+- 🎨 **Customizable** - Show/hide features as needed
 
-```sh
+## Quick Start
+
+### Installation
+
+```bash
+# Install the core package
 npm install react-native-better-dev-tools-internal
+
+# Install plugins you want
+npm install @react-native-better-dev-tools/plugin-wifi-toggle
+npm install @react-native-better-dev-tools/plugin-react-query
 ```
 
+### Basic Usage
 
-## Usage
+```tsx
+import { DevToolsBubbleWithPlugins } from 'react-native-better-dev-tools-internal';
+import wifiTogglePlugin from '@react-native-better-dev-tools/plugin-wifi-toggle';
+import reactQueryPlugin from '@react-native-better-dev-tools/plugin-react-query';
 
-
-```js
-import { multiply } from 'react-native-better-dev-tools-internal';
-
-// ...
-
-const result = await multiply(3, 7);
+function App() {
+  return (
+    <>
+      <DevToolsBubbleWithPlugins
+        userRole="admin"
+        environment="dev"
+        queryClient={queryClient} // Optional: for React Query
+        plugins={[
+          wifiTogglePlugin,
+          reactQueryPlugin
+        ]}
+      />
+      {/* Your app content */}
+    </>
+  );
+}
 ```
 
+## Available Plugins
+
+| Plugin | Package | Description |
+|--------|---------|-------------|
+| WiFi Toggle | `@react-native-better-dev-tools/plugin-wifi-toggle` | Toggle online/offline state |
+| React Query | `@react-native-better-dev-tools/plugin-react-query` | Debug queries & mutations |
+
+## Documentation
+
+- [📚 Plugin Development Guide](./docs/PLUGIN_DEVELOPMENT.md) - Create your own plugins
+- [🏗️ Monorepo Setup](./docs/MONOREPO_SETUP.md) - How the architecture works
+- [⚡ Quick Plugin Tutorial](./docs/QUICK_PLUGIN_GUIDE.md) - 5-minute plugin creation
 
 ## Contributing
 
