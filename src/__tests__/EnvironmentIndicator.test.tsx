@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react-native';
 import { EnvironmentIndicator } from '../floatingBubble/components/EnvironmentIndicator';
+import { gameUIColors } from '../../rn-better-dev-tools/src/shared/ui/gameUI/constants/gameUIColors';
 
 describe('EnvironmentIndicator', () => {
   it('should render without crashing', () => {
@@ -43,7 +44,7 @@ describe('EnvironmentIndicator', () => {
       const dotView = json?.children?.[0];
       const dotStyle = dotView?.props?.style;
       
-      expect(dotStyle?.backgroundColor).toBe('#06B6D4');
+      expect(dotStyle?.backgroundColor).toBe(gameUIColors.info);
     });
 
     it('should have orange dot for dev environment', () => {
@@ -53,7 +54,7 @@ describe('EnvironmentIndicator', () => {
       const dotView = json?.children?.[0];
       const dotStyle = dotView?.props?.style;
       
-      expect(dotStyle?.backgroundColor).toBe('#F97316');
+      expect(dotStyle?.backgroundColor).toBe(gameUIColors.warning);
     });
 
     it('should have purple dot for qa environment', () => {
@@ -63,7 +64,7 @@ describe('EnvironmentIndicator', () => {
       const dotView = json?.children?.[0];
       const dotStyle = dotView?.props?.style;
       
-      expect(dotStyle?.backgroundColor).toBe('#8B5CF6');
+      expect(dotStyle?.backgroundColor).toBe(gameUIColors.optional);
     });
 
     it('should have green dot for staging environment', () => {
@@ -73,7 +74,7 @@ describe('EnvironmentIndicator', () => {
       const dotView = json?.children?.[0];
       const dotStyle = dotView?.props?.style;
       
-      expect(dotStyle?.backgroundColor).toBe('#10B981');
+      expect(dotStyle?.backgroundColor).toBe(gameUIColors.success);
     });
 
     it('should have red dot for prod environment', () => {
@@ -83,7 +84,7 @@ describe('EnvironmentIndicator', () => {
       const dotView = json?.children?.[0];
       const dotStyle = dotView?.props?.style;
       
-      expect(dotStyle?.backgroundColor).toBe('#DC2626');
+      expect(dotStyle?.backgroundColor).toBe(gameUIColors.error);
     });
   });
 
@@ -109,7 +110,7 @@ describe('EnvironmentIndicator', () => {
       
       expect(textStyle?.fontSize).toBe(11);
       expect(textStyle?.fontWeight).toBe('600');
-      expect(textStyle?.color).toBe('#F9FAFB');
+      expect(textStyle?.color).toBe(gameUIColors.primaryLight);
       expect(textStyle?.letterSpacing).toBe(0.5);
     });
 
@@ -132,7 +133,7 @@ describe('EnvironmentIndicator', () => {
       const dotView = json?.children?.[0];
       const dotStyle = dotView?.props?.style;
       
-      expect(dotStyle?.shadowColor).toBe('#06B6D4');
+      expect(dotStyle?.shadowColor).toBe(gameUIColors.info);
       expect(dotStyle?.shadowOpacity).toBe(0.6);
       expect(dotStyle?.shadowRadius).toBe(4);
       expect(dotStyle?.elevation).toBe(2);

@@ -1,5 +1,6 @@
 import { render, fireEvent } from '@testing-library/react-native';
 import { UserStatus } from '../floatingBubble/components/UserStatus';
+import { gameUIColors } from '../../rn-better-dev-tools/src/shared/ui/gameUI/constants/gameUIColors';
 
 describe('UserStatus', () => {
   it('should render without crashing', () => {
@@ -19,7 +20,7 @@ describe('UserStatus', () => {
       
       const json = toJSON();
       const dotView = json?.children?.[0];
-      expect(dotView?.props?.style?.backgroundColor).toBe('#10B981');
+      expect(dotView?.props?.style?.backgroundColor).toBe(gameUIColors.success);
     });
 
     it('should display Internal with correct color', () => {
@@ -31,7 +32,7 @@ describe('UserStatus', () => {
       
       const json = toJSON();
       const dotView = json?.children?.[0];
-      expect(dotView?.props?.style?.backgroundColor).toBe('#6366F1');
+      expect(dotView?.props?.style?.backgroundColor).toBe(gameUIColors.optional);
     });
 
     it('should display User with correct color', () => {
@@ -43,7 +44,7 @@ describe('UserStatus', () => {
       
       const json = toJSON();
       const dotView = json?.children?.[0];
-      expect(dotView?.props?.style?.backgroundColor).toBe('#6B7280');
+      expect(dotView?.props?.style?.backgroundColor).toBe(gameUIColors.muted);
     });
   });
 

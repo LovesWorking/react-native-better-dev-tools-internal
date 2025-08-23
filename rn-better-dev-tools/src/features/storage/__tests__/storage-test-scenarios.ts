@@ -185,25 +185,19 @@ export function validateTestScenarios() {
  * - EXPO_PUBLIC_ENABLE_TELEMETRY: undefined
  */
 
-// Run validation and log results
-if (typeof console !== 'undefined') {
-  const results = validateTestScenarios();
-  console.log("Storage Validation Test Results:");
-  console.log("================================");
-  
-  const passed = results.filter(r => r.passed);
-  const failed = results.filter(r => !r.passed);
-  
-  console.log(`✅ Passed: ${passed.length}/${results.length}`);
-  console.log(`❌ Failed: ${failed.length}/${results.length}`);
-  
-  if (failed.length > 0) {
-    console.log("\nFailed Tests:");
-    failed.forEach(r => {
-      console.log(`  ${r.key}:`);
-      console.log(`    Value: ${r.value}`);
-      console.log(`    Expected: ${r.expectedStatus}`);
-      console.log(`    Got: ${r.actualStatus}`);
-    });
-  }
-}
+// Add a test to make this a valid test file
+describe('Storage Test Scenarios', () => {
+  it('should validate all test scenarios correctly', () => {
+    const results = validateTestScenarios();
+    
+    // All scenarios should validate correctly (expectedStatus === actualStatus)
+    const allPassed = results.every(r => r.passed);
+    
+    if (!allPassed) {
+      const failed = results.filter(r => !r.passed);
+      console.log('Failed validations:', failed);
+    }
+    
+    expect(allPassed).toBe(true);
+  });
+});

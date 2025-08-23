@@ -12,6 +12,14 @@ import {
   type UserRole,
   type Environment,
 } from 'react-native-better-dev-tools-internal';
+
+// Import the NEW self-contained FloatingTools from rn-better-dev-tools
+import {
+  FloatingTools,
+  EnvironmentIndicator,
+  UserStatus,
+  Divider,
+} from '../../rn-better-dev-tools/src/components/bubble/floatingTools';
 import { QueryClient, useQuery, onlineManager } from '@tanstack/react-query';
 import { QueryClientWrapper } from './QueryClientWrapper';
 
@@ -121,21 +129,91 @@ function AppContent() {
   const [enablePositionPersistence, setEnablePositionPersistence] =
     useState(true);
 
+  // Toggle for showing comparison mode
+  const [showComparison, setShowComparison] = useState(true);
+
   return (
-    <View style={{ flex: 1 }}>
-      <DevToolsBubbleWithPlugins
-        userRole={userRole}
-        environment={environment}
-        hideEnvironment={hideEnvironment}
-        hideUserStatus={hideUserStatus}
-        hideWifiToggle={hideWifiToggle}
-        enablePositionPersistence={enablePositionPersistence}
-        onStatusPress={() => console.log('Status pressed!')}
-        onEnvironmentPress={() => console.log('Environment pressed!')}
-        queryClient={queryClient}
-        plugins={[wifiTogglePlugin, reactQueryPlugin]}
-      />
+    <View style={styles.mainContainer}>
+      {/* Show both implementations for comparison */}
+      {showComparison ? (
+        <>
+          {/* Original DevToolsBubbleWithPlugins */}
+          <DevToolsBubbleWithPlugins
+            userRole={userRole}
+            environment={environment}
+            hideEnvironment={hideEnvironment}
+            hideUserStatus={hideUserStatus}
+            hideWifiToggle={true}
+            enablePositionPersistence={false} // Disable persistence for first one to avoid conflicts
+            onStatusPress={() => console.log('Original: Status pressed!')}
+            onEnvironmentPress={() =>
+              console.log('Original: Environment pressed!')
+            }
+            queryClient={queryClient}
+            plugins={[wifiTogglePlugin, reactQueryPlugin]}
+          />
+
+          {/* NEW FloatingTools implementation from rn-better-dev-tools */}
+          <View style={styles.floatingToolsContainer}>
+            <FloatingTools enablePositionPersistence={false}>
+              {!hideEnvironment && environment && (
+                <>
+                  <EnvironmentIndicator environment={environment} />
+                  {!hideUserStatus && <Divider />}
+                </>
+              )}
+              {!hideUserStatus && userRole && (
+                <>
+                  <UserStatus
+                    userRole={userRole}
+                    onPress={() =>
+                      console.log('NEW FloatingTools: Status pressed!')
+                    }
+                  />
+                </>
+              )}
+            </FloatingTools>
+          </View>
+        </>
+      ) : (
+        // Show only NEW FloatingTools
+        <FloatingTools enablePositionPersistence={enablePositionPersistence}>
+          {!hideEnvironment && environment && (
+            <>
+              <EnvironmentIndicator environment={environment} />
+              {!hideUserStatus && <Divider />}
+            </>
+          )}
+          {!hideUserStatus && userRole && (
+            <>
+              <UserStatus
+                userRole={userRole}
+                onPress={() => console.log('Status pressed!')}
+              />
+            </>
+          )}
+        </FloatingTools>
+      )}
       <ScrollView style={styles.container}>
+        {/* Toggle between implementations */}
+        <View style={styles.implementationToggle}>
+          <Text style={styles.toggleTitle}>
+            {showComparison
+              ? 'Comparison Mode: Both Visible'
+              : 'Single Mode: FloatingTools Only'}
+          </Text>
+          <Button
+            title={showComparison ? 'Show Single' : 'Show Comparison'}
+            onPress={() => setShowComparison(!showComparison)}
+            color="#8B5CF6"
+          />
+          <Text style={styles.toggleDescription}>
+            {showComparison
+              ? 'Top: Original DevToolsBubbleWithPlugins | Bottom: NEW FloatingTools'
+              : 'Single NEW FloatingTools instance'}
+          </Text>
+        </View>
+
         <OnlineStatusIndicator />
         <Button
           title="Toggle WiFi"
@@ -277,11 +355,41 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+  },
+  floatingToolsContainer: {
+    position: 'absolute',
+    top: 150,
+    left: 0,
+    right: 0,
+  },
   container: {
     paddingTop: 75,
     paddingBottom: 150,
     flex: 1,
     backgroundColor: '#f5f5f5',
+  },
+  implementationToggle: {
+    margin: 20,
+    padding: 15,
+    backgroundColor: '#F3E8FF',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#8B5CF6',
+    alignItems: 'center',
+    gap: 10,
+  },
+  toggleTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#6B21A8',
+  },
+  toggleDescription: {
+    fontSize: 12,
+    color: '#6B21A8',
+    textAlign: 'center',
+    paddingHorizontal: 10,
   },
   statusContainer: {
     margin: 20,

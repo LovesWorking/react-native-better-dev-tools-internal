@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "rootDir": ".",
+    "baseUrl": ".",
     "paths": {
       "react-native-better-dev-tools-internal": ["./src/index"],
-      "@/*": ["*"]
+      "@/*": ["./*"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

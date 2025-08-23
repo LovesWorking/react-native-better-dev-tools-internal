@@ -13,6 +13,7 @@ interface UsePositionPersistenceProps {
   bubbleWidth?: number;
   bubbleHeight?: number;
   enabled?: boolean;
+  visibleHandleWidth?: number;
 }
 
 interface SavedPosition {
@@ -28,6 +29,7 @@ export function usePositionPersistence({
   bubbleWidth = 100,
   bubbleHeight = 32,
   enabled = true,
+  visibleHandleWidth = 32,
 }: UsePositionPersistenceProps) {
   const isInitialized = useRef(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -101,16 +103,18 @@ export function usePositionPersistence({
   const validatePosition = useCallback((position: SavedPosition): SavedPosition => {
     const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
     
-    // Ensure bubble stays within screen bounds with some padding
+    // Ensure bubble stays within screen bounds
+    // Allow pushing off-screen to the right so only the grab handle remains visible
     const padding = 20;
-    const maxX = screenWidth - bubbleWidth - padding;
+    const minX = padding;
+    const maxX = screenWidth - visibleHandleWidth; // Allow hiding most of bubble
     const maxY = screenHeight - bubbleHeight - padding;
     
     return {
-      x: Math.max(padding, Math.min(position.x, maxX)),
+      x: Math.max(minX, Math.min(position.x, maxX)),
       y: Math.max(padding, Math.min(position.y, maxY)),
     };
-  }, [bubbleWidth, bubbleHeight]);
+  }, [visibleHandleWidth, bubbleHeight]);
 
   /**
    * Restore position on mount

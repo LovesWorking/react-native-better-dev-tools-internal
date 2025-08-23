@@ -1,5 +1,6 @@
 import { Text, View, type ViewStyle, type TextStyle } from 'react-native';
 import type { Environment } from '../types';
+import { gameUIColors } from '../../../rn-better-dev-tools/src/shared/ui/gameUI/constants/gameUIColors';
 
 interface EnvironmentIndicatorProps {
   environment: Environment;
@@ -15,32 +16,32 @@ function getEnvironmentConfig(environment: Environment): EnvironmentConfig {
     case 'local':
       return {
         label: 'LOCAL',
-        backgroundColor: '#06B6D4', // Cyan
+        backgroundColor: gameUIColors.info,
       };
     case 'dev':
       return {
         label: 'DEV',
-        backgroundColor: '#F97316', // Orange
+        backgroundColor: gameUIColors.warning,
       };
     case 'qa':
       return {
         label: 'QA',
-        backgroundColor: '#8B5CF6', // Purple
+        backgroundColor: gameUIColors.optional,
       };
     case 'staging':
       return {
         label: 'STAGING',
-        backgroundColor: '#10B981', // Green
+        backgroundColor: gameUIColors.success,
       };
     case 'prod':
       return {
         label: 'PROD',
-        backgroundColor: '#DC2626', // Red
+        backgroundColor: gameUIColors.error,
       };
     default:
       return {
         label: 'LOCAL',
-        backgroundColor: '#06B6D4',
+        backgroundColor: gameUIColors.info,
       };
   }
 }
@@ -72,7 +73,7 @@ export function EnvironmentIndicator({ environment }: EnvironmentIndicatorProps)
   const textStyle: TextStyle = {
     fontSize: 11,
     fontWeight: '600',
-    color: '#F9FAFB',
+    color: gameUIColors.primaryLight,
     letterSpacing: 0.5,
   };
 

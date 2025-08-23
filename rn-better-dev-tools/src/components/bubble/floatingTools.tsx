@@ -20,8 +20,8 @@ import {
   type ViewStyle,
   type TextStyle,
 } from "react-native";
-import { useSafeAreaInsets as usePureJSSafeAreaInsets, getSafeAreaInsets as getPureJSSafeAreaInsets } from "@/rn-better-dev-tools/src/shared/hooks/useSafeAreaInsets";
-import { gameUIColors } from "@/rn-better-dev-tools/src/shared/ui/gameUI";
+import { useSafeAreaInsets as usePureJSSafeAreaInsets, getSafeAreaInsets as getPureJSSafeAreaInsets } from "../../shared/hooks/useSafeAreaInsets";
+import { gameUIColors } from "../../shared/ui/gameUI/constants/gameUIColors";
 // Using Views to render grip dots; no react-native-svg dependency
 
 // =============================

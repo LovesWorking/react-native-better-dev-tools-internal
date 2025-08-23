@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo, createContext } from 'react';
 import {
   Animated,
   PanResponder,
@@ -7,7 +7,6 @@ import {
   Modal,
   type ViewStyle,
 } from 'react-native';
-import { GripVerticalIcon } from '../icons/lucide-icons';
 import { UserStatus } from './components/UserStatus';
 import { EnvironmentIndicator } from './components/EnvironmentIndicator';
 import { Divider } from './components/Divider';
@@ -15,6 +14,75 @@ import { usePositionPersistence } from './hooks/usePositionPersistence';
 import { PluginProvider, useEnabledPlugins, usePlugins } from './providers/PluginProvider';
 import type { DevToolsBubbleProps } from './types';
 import type { DevToolsPlugin, PluginContext } from './types/plugin';
+import { gameUIColors } from '../../rn-better-dev-tools/src/shared/ui/gameUI/constants/gameUIColors';
+
+// Pure View-based GripVerticalIcon (no SVG dependencies)
+function GripVerticalIcon({
+  size = 24,
+  color = gameUIColors.secondary + "CC",
+}: {
+  size?: number;
+  color?: string;
+}) {
+  const containerStyle: ViewStyle = {
+    width: size,
+    height: size,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+
+  const dotSize = Math.max(2, Math.round(size / 6));
+  const columnGap = Math.max(2, Math.round(size / 12));
+  const rowGap = Math.max(2, Math.round(size / 12));
+
+  const columnStyle: ViewStyle = {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: columnGap / 2,
+  };
+
+  const dotStyle: ViewStyle = {
+    width: dotSize,
+    height: dotSize,
+    borderRadius: dotSize / 2,
+    backgroundColor: color,
+    marginVertical: rowGap / 2,
+  };
+
+  return (
+    <View style={containerStyle}>
+      <View style={columnStyle}>
+        <View style={dotStyle} />
+        <View style={dotStyle} />
+        <View style={dotStyle} />
+      </View>
+      <View style={columnStyle}>
+        <View style={dotStyle} />
+        <View style={dotStyle} />
+        <View style={dotStyle} />
+      </View>
+    </View>
+  );
+}
+
+// Context to avoid brittle prop threading and keep API composable
+const FloatingToolsContext = createContext<{ isDragging: boolean }>({
+  isDragging: false,
+});
+
+// Get safe area insets helper
+function getSafeAreaInsets(): {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+} {
+  // For now, use default safe area values
+  // TODO: Integrate with react-native-safe-area-context properly
+  return { top: 20, bottom: 0, left: 0, right: 0 };
+}
 
 // Plugins are now provided externally via props
 
@@ -36,6 +104,8 @@ function DevToolsBubbleInner({
   const [isDragging, setIsDragging] = useState(false);
   const [bubbleSize, setBubbleSize] = useState({ width: 100, height: 32 });
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [isHidden, setIsHidden] = useState(false);
+  const safeAreaInsets = getSafeAreaInsets();
   
   const manager = usePlugins();
   const enabledPlugins = useEnabledPlugins();
@@ -46,18 +116,36 @@ function DevToolsBubbleInner({
     bubbleWidth: bubbleSize.width,
     bubbleHeight: bubbleSize.height,
     enabled: enablePositionPersistence,
+    visibleHandleWidth: 32,
   });
 
-  // Set initial position from screen dimensions
+  // Check if bubble is in hidden position on load
+  useEffect(() => {
+    if (!enablePositionPersistence) return;
+
+    const checkHiddenState = () => {
+      const currentX = (animatedPosition.x as any).__getValue();
+      const { width: screenWidth } = Dimensions.get('window');
+      // Check if bubble is at the hidden position (showing only grabber)
+      if (currentX >= screenWidth - 32 - 5) {
+        setIsHidden(true);
+      }
+    };
+    // Delay check to ensure position is loaded
+    const timer = setTimeout(checkHiddenState, 100);
+    return () => clearTimeout(timer);
+  }, [enablePositionPersistence, animatedPosition]);
+
+  // Default position when persistence disabled
   useEffect(() => {
     if (!enablePositionPersistence) {
       const { width: screenWidth } = Dimensions.get('window');
       animatedPosition.setValue({
         x: screenWidth - bubbleSize.width - 20,
-        y: 100,
+        y: Math.max(100, safeAreaInsets.top + 20),
       });
     }
-  }, [enablePositionPersistence, animatedPosition, bubbleSize.width]);
+  }, [enablePositionPersistence, animatedPosition, bubbleSize.width, safeAreaInsets.top]);
 
   // Listen for modal open events from plugins
   useEffect(() => {
@@ -67,53 +155,113 @@ function DevToolsBubbleInner({
     return () => unsubscribe();
   }, [manager]);
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: () => {
-        setIsDragging(true);
-        animatedPosition.setOffset({
-          x: (animatedPosition.x as any).__getValue(),
-          y: (animatedPosition.y as any).__getValue(),
-        });
-        animatedPosition.setValue({ x: 0, y: 0 });
-      },
-      onPanResponderMove: Animated.event(
-        [null, { dx: animatedPosition.x, dy: animatedPosition.y }],
-        { useNativeDriver: false }
-      ),
-      onPanResponderRelease: () => {
-        setIsDragging(false);
-        animatedPosition.flattenOffset();
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderGrant: () => {
+          setIsDragging(true);
+          animatedPosition.setOffset({
+            x: (animatedPosition.x as any).__getValue(),
+            y: (animatedPosition.y as any).__getValue(),
+          });
+          animatedPosition.setValue({ x: 0, y: 0 });
+        },
+        onPanResponderMove: Animated.event(
+          [null, { dx: animatedPosition.x, dy: animatedPosition.y }],
+          { useNativeDriver: false }
+        ),
+        onPanResponderRelease: () => {
+          setIsDragging(false);
+          animatedPosition.flattenOffset();
+          let currentX = (animatedPosition.x as any).__getValue();
+          let currentY = (animatedPosition.y as any).__getValue();
+          const { width: screenWidth, height: screenHeight } =
+            Dimensions.get('window');
 
-        // Save final position immediately
-        const currentX = (animatedPosition.x as any).__getValue();
-        const currentY = (animatedPosition.y as any).__getValue();
-        savePosition(currentX, currentY);
-      },
-      onPanResponderTerminate: () => {
-        setIsDragging(false);
-        animatedPosition.flattenOffset();
-      },
-    })
-  ).current;
+          // Prevent dragging off left, top, and bottom edges with safe area
+          const minX = safeAreaInsets.left;
+          const minY = safeAreaInsets.top;
+          const maxY = screenHeight - bubbleSize.height - safeAreaInsets.bottom;
 
-  const bubbleStyle: Animated.WithAnimatedObject<ViewStyle> = {
-    position: 'absolute',
-    zIndex: 1001,
-    transform: animatedPosition.getTranslateTransform(),
-  };
+          // Clamp Y position to prevent going off top/bottom
+          currentY = Math.max(minY, Math.min(currentY, maxY));
+
+          // Check if bubble is more than 50% over the right edge
+          const bubbleMidpoint = currentX + bubbleSize.width / 2;
+          const shouldHide = bubbleMidpoint > screenWidth;
+
+          if (shouldHide) {
+            // Animate to hidden position (only grabber visible)
+            const hiddenX = screenWidth - 32; // Only show the 32px grabber
+            setIsHidden(true);
+            Animated.timing(animatedPosition, {
+              toValue: { x: hiddenX, y: currentY },
+              duration: 200,
+              useNativeDriver: false,
+            }).start(() => {
+              savePosition(hiddenX, currentY);
+            });
+          } else {
+            // Clamp X position to prevent going off left edge
+            currentX = Math.max(minX, currentX);
+
+            // Check if we're in hidden state and user is pulling it back
+            if (isHidden && currentX < screenWidth - 32 - 10) {
+              setIsHidden(false);
+            }
+
+            // Animate to the clamped position if needed
+            if (
+              currentX !== (animatedPosition.x as any).__getValue() ||
+              currentY !== (animatedPosition.y as any).__getValue()
+            ) {
+              Animated.timing(animatedPosition, {
+                toValue: { x: currentX, y: currentY },
+                duration: 100,
+                useNativeDriver: false,
+              }).start(() => {
+                savePosition(currentX, currentY);
+              });
+            } else {
+              savePosition(currentX, currentY);
+            }
+          }
+        },
+        onPanResponderTerminate: () => {
+          setIsDragging(false);
+          animatedPosition.flattenOffset();
+        },
+      }),
+    [
+      animatedPosition,
+      savePosition,
+      bubbleSize.width,
+      bubbleSize.height,
+      isHidden,
+      safeAreaInsets,
+    ]
+  );
+
+  const bubbleStyle: Animated.WithAnimatedObject<ViewStyle> = useMemo(
+    () => ({
+      position: 'absolute',
+      zIndex: 1001,
+      transform: animatedPosition.getTranslateTransform(),
+    }),
+    [animatedPosition]
+  );
 
   const containerStyle: ViewStyle = {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#171717',
+    backgroundColor: gameUIColors.panel,
     borderRadius: 6,
     borderWidth: isDragging ? 2 : 1,
-    borderColor: isDragging ? 'rgba(34, 197, 94, 1)' : 'rgba(75, 85, 99, 0.4)',
+    borderColor: isDragging ? gameUIColors.info : gameUIColors.muted + "66",
     overflow: 'hidden',
     elevation: 8,
-    shadowColor: isDragging ? 'rgba(34, 197, 94, 0.6)' : '#000',
+    shadowColor: isDragging ? gameUIColors.info + "99" : '#000',
     shadowOffset: { width: 0, height: isDragging ? 6 : 4 },
     shadowOpacity: isDragging ? 0.6 : 0.3,
     shadowRadius: isDragging ? 12 : 8,
@@ -122,12 +270,12 @@ function DevToolsBubbleInner({
   const dragHandleStyle: ViewStyle = {
     paddingHorizontal: 6,
     paddingVertical: 6,
-    backgroundColor: 'rgba(107, 114, 128, 0.1)',
+    backgroundColor: gameUIColors.muted + "1A",
     alignItems: 'center',
     justifyContent: 'center',
     width: 32,
     borderRightWidth: 1,
-    borderRightColor: 'rgba(75, 85, 99, 0.4)',
+    borderRightColor: gameUIColors.muted + "66",
   };
 
   const contentStyle: ViewStyle = {
@@ -179,45 +327,47 @@ function DevToolsBubbleInner({
           }}
         >
           <View style={dragHandleStyle}>
-            <GripVerticalIcon size={12} color="rgba(156, 163, 175, 0.8)" />
+            <GripVerticalIcon size={12} color={gameUIColors.secondary + "CC"} />
           </View>
 
-          <View style={contentStyle}>
-            {/* Legacy components for backward compatibility */}
-            {shouldShowEnvironment && (
-              <>
-                <EnvironmentIndicator environment={environment} />
-                <Divider />
-              </>
-            )}
+          <FloatingToolsContext.Provider value={{ isDragging }}>
+            <View style={contentStyle}>
+              {/* Legacy components for backward compatibility */}
+              {shouldShowEnvironment && (
+                <>
+                  <EnvironmentIndicator environment={environment} />
+                  <Divider />
+                </>
+              )}
 
-            {shouldShowUserStatus && (
-              <>
-                <UserStatus
-                  userRole={userRole}
-                  onPress={onStatusPress}
-                  isDragging={isDragging}
-                />
-                <Divider />
-              </>
-            )}
-
-            {/* Plugin components */}
-            {visiblePlugins.map((plugin, index) => {
-              if (!plugin.component) return null;
-              
-              const PluginComponent = plugin.component;
-              return (
-                <React.Fragment key={plugin.id}>
-                  <PluginComponent 
-                    context={pluginContext} 
+              {shouldShowUserStatus && (
+                <>
+                  <UserStatus
+                    userRole={userRole}
+                    onPress={onStatusPress}
                     isDragging={isDragging}
                   />
-                  {index < visiblePlugins.length - 1 && <Divider />}
-                </React.Fragment>
-              );
-            })}
-          </View>
+                  <Divider />
+                </>
+              )}
+
+              {/* Plugin components */}
+              {visiblePlugins.map((plugin, index) => {
+                if (!plugin.component) return null;
+                
+                const PluginComponent = plugin.component;
+                return (
+                  <React.Fragment key={plugin.id}>
+                    <PluginComponent 
+                      context={pluginContext} 
+                      isDragging={isDragging}
+                    />
+                    {index < visiblePlugins.length - 1 && <Divider />}
+                  </React.Fragment>
+                );
+              })}
+            </View>
+          </FloatingToolsContext.Provider>
         </View>
       </Animated.View>
 

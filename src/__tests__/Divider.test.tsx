@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react-native';
 import { Divider } from '../floatingBubble/components/Divider';
+import { gameUIColors } from '../../rn-better-dev-tools/src/shared/ui/gameUI/constants/gameUIColors';
 
 describe('Divider', () => {
   it('should render without crashing', () => {
@@ -31,7 +32,7 @@ describe('Divider', () => {
       
       const dividerStyle = json?.props?.style;
       
-      expect(dividerStyle?.backgroundColor).toBe('rgba(107, 114, 128, 0.4)');
+      expect(dividerStyle?.backgroundColor).toBe(gameUIColors.muted + "66");
     });
 
     it('should have flexShrink set to 0', () => {
@@ -70,7 +71,7 @@ describe('Divider', () => {
           style: {
             width: 1,
             height: 12,
-            backgroundColor: 'rgba(107, 114, 128, 0.4)',
+            backgroundColor: gameUIColors.muted + "66",
             flexShrink: 0,
           }
         }

@@ -6,6 +6,7 @@ import {
   type TextStyle,
 } from 'react-native';
 import type { UserRole } from '../types';
+import { gameUIColors } from '../../../rn-better-dev-tools/src/shared/ui/gameUI/constants/gameUIColors';
 
 interface UserStatusProps {
   userRole: UserRole;
@@ -18,21 +19,21 @@ function getUserStatusConfig(userRole: UserRole) {
     case 'admin':
       return {
         label: 'Admin',
-        dotColor: '#10B981',
-        textColor: '#10B981',
+        dotColor: gameUIColors.success,
+        textColor: gameUIColors.success,
       };
     case 'internal':
       return {
         label: 'Internal',
-        dotColor: '#6366F1',
-        textColor: '#A5B4FC',
+        dotColor: gameUIColors.optional,
+        textColor: gameUIColors.optional,
       };
     case 'user':
     default:
       return {
         label: 'User',
-        dotColor: '#6B7280',
-        textColor: '#9CA3AF',
+        dotColor: gameUIColors.muted,
+        textColor: gameUIColors.secondary,
       };
   }
 }

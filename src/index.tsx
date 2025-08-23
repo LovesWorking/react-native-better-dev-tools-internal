@@ -2,6 +2,9 @@
 export { DevToolsBubbleWithPlugins } from './floatingBubble/DevToolsBubbleWithPlugins';
 export { DevToolsBubbleWithPlugins as DevToolsBubble } from './floatingBubble/DevToolsBubbleWithPlugins'; // Alias for simplicity
 
+// New FloatingTools export (re-exports DevToolsBubbleWithPlugins)
+export { FloatingTools, EnvironmentIndicator, UserStatus, Divider } from './floatingTools';
+
 // Plugin system
 export { PluginProvider, usePlugins, usePlugin, useEnabledPlugins } from './floatingBubble/providers/PluginProvider';
 export { PluginManager } from './floatingBubble/core/PluginManager';
