@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Switch,
   ScrollView,
+  Pressable,
 } from 'react-native';
 import {
   DevToolsBubbleWithPlugins,
@@ -131,6 +132,22 @@ function AppContent() {
 
   // Toggle for showing comparison mode
   const [showComparison, setShowComparison] = useState(true);
+  
+  // Menu type selection
+  const [menuType, setMenuType] = useState<'dial' | 'grid' | 'dial2'>('dial');
+  
+  // Auto-trigger status press for testing
+  const [autoShowMenu, setAutoShowMenu] = useState(false);
+  useEffect(() => {
+    // Simulate clicking the status after 2 seconds
+    const timer = setTimeout(() => {
+      console.log('Auto-triggering menu display for testing');
+      setAutoShowMenu(true);
+      // Auto-close after a few seconds
+      setTimeout(() => setAutoShowMenu(false), 3000);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <View style={styles.mainContainer}>
@@ -151,6 +168,8 @@ function AppContent() {
             }
             queryClient={queryClient}
             plugins={[wifiTogglePlugin, reactQueryPlugin]}
+            menuType={menuType}
+            autoShowMenu={true}
           />
 
           {/* NEW FloatingTools implementation from rn-better-dev-tools */}
@@ -211,6 +230,64 @@ function AppContent() {
             {showComparison
               ? 'Top: Original DevToolsBubbleWithPlugins | Bottom: NEW FloatingTools'
               : 'Single NEW FloatingTools instance'}
+          </Text>
+        </View>
+
+        {/* Menu Type Selector */}
+        <View style={styles.settingSection}>
+          <Text style={styles.sectionTitle}>Menu Type</Text>
+          <ScrollView horizontal style={styles.menuTypeSelector}>
+            <Pressable
+              style={[
+                styles.menuTypeButton,
+                menuType === 'dial' && styles.menuTypeButtonActive,
+              ]}
+              onPress={() => setMenuType('dial')}
+            >
+              <Text
+                style={[
+                  styles.menuTypeButtonText,
+                  menuType === 'dial' && styles.menuTypeButtonTextActive,
+                ]}
+              >
+                Dial Menu
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[
+                styles.menuTypeButton,
+                menuType === 'grid' && styles.menuTypeButtonActive,
+              ]}
+              onPress={() => setMenuType('grid')}
+            >
+              <Text
+                style={[
+                  styles.menuTypeButtonText,
+                  menuType === 'grid' && styles.menuTypeButtonTextActive,
+                ]}
+              >
+                Grid (Cyberpunk)
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[
+                styles.menuTypeButton,
+                menuType === 'dial2' && styles.menuTypeButtonActive,
+              ]}
+              onPress={() => setMenuType('dial2')}
+            >
+              <Text
+                style={[
+                  styles.menuTypeButtonText,
+                  menuType === 'dial2' && styles.menuTypeButtonTextActive,
+                ]}
+              >
+                Dial2 (List)
+              </Text>
+            </Pressable>
+          </ScrollView>
+          <Text style={styles.settingDescription}>
+            Click on the Admin status button to see the selected menu style
           </Text>
         </View>
 
@@ -369,6 +446,47 @@ const styles = StyleSheet.create({
     paddingBottom: 150,
     flex: 1,
     backgroundColor: '#f5f5f5',
+  },
+  settingSection: {
+    margin: 20,
+    padding: 15,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  settingDescription: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  menuTypeSelector: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  menuTypeButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 8,
+    alignItems: 'center',
+    marginRight: 10,
+    minWidth: 100,
+  },
+  menuTypeButtonActive: {
+    backgroundColor: '#8B5CF6',
+  },
+  menuTypeButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  menuTypeButtonTextActive: {
+    color: '#FFFFFF',
   },
   implementationToggle: {
     margin: 20,

@@ -10,6 +10,9 @@ import {
 import { UserStatus } from './components/UserStatus';
 import { EnvironmentIndicator } from './components/EnvironmentIndicator';
 import { Divider } from './components/Divider';
+import DialDevTools from './dial/DialDevTools';
+import { ClaudeGridMenu } from './ClaudeGridMenuOriginal';
+import Dial2 from './dial/Dial2';
 import { usePositionPersistence } from './hooks/usePositionPersistence';
 import { PluginProvider, useEnabledPlugins, usePlugins } from './providers/PluginProvider';
 import type { DevToolsBubbleProps } from './types';
@@ -97,9 +100,16 @@ function DevToolsBubbleInner({
   hideWifiToggle = false,
   enablePositionPersistence = true,
   onStatusPress,
+  onEnvironmentPress,
   queryClient,
   plugins: _additionalPlugins = [],
-}: DevToolsBubbleProps & { plugins?: DevToolsPlugin[] }) {
+  menuType: defaultMenuType = 'dial',
+  autoShowMenu = false,
+}: DevToolsBubbleProps & { 
+  plugins?: DevToolsPlugin[], 
+  menuType?: 'dial' | 'grid' | 'dial2',
+  autoShowMenu?: boolean
+}) {
   const animatedPosition = useRef(new Animated.ValueXY()).current;
   const [isDragging, setIsDragging] = useState(false);
   const [bubbleSize, setBubbleSize] = useState({ width: 100, height: 32 });
@@ -107,8 +117,70 @@ function DevToolsBubbleInner({
   const [isHidden, setIsHidden] = useState(false);
   const safeAreaInsets = getSafeAreaInsets();
   
+  // Modal menu state management
+  const [showMenuModal, setShowMenuModal] = useState(autoShowMenu);
+  const menuType = defaultMenuType;
+  
+  // Auto-show menu when prop changes
+  useEffect(() => {
+    setShowMenuModal(autoShowMenu);
+  }, [autoShowMenu]);
+  
   const manager = usePlugins();
   const enabledPlugins = useEnabledPlugins();
+  
+  // Handle status press to show menu
+  const handleStatusPress = () => {
+    setShowMenuModal(true);
+    
+    // Also call the original onStatusPress if provided
+    if (onStatusPress) {
+      onStatusPress();
+    }
+  };
+  
+  // Menu action handlers
+  const handleQueryPress = () => {
+    // Trigger React Query modal
+    setActiveModal('react-query');
+    setShowMenuModal(false);
+  };
+  
+  const handleStoragePress = () => {
+    // Trigger storage modal
+    setActiveModal('storage');
+    setShowMenuModal(false);
+  };
+  
+  const handleWifiToggle = () => {
+    // Find and trigger WiFi plugin through manager
+    const wifiPlugin = enabledPlugins.find(p => p.id === 'wifi-toggle');
+    if (wifiPlugin) {
+      // Emit toggle event through plugin system
+      manager.getEventEmitter().emit('wifi-toggle:toggle');
+    }
+    setShowMenuModal(false);
+  };
+  
+  const handleEnvPress = () => {
+    // Call the environment press handler if provided
+    if (onEnvironmentPress) {
+      onEnvironmentPress();
+    }
+    setShowMenuModal(false);
+  };
+  
+  const handleDebugPress = () => {
+    // Placeholder for debug/sentry functionality
+    console.log('Debug pressed');
+    setShowMenuModal(false);
+  };
+  
+  const handleNetworkPress = () => {
+    // Placeholder for network functionality
+    console.log('Network pressed');
+    setShowMenuModal(false);
+  };
 
   // Use position persistence hook
   const { savePosition } = usePositionPersistence({
@@ -344,7 +416,7 @@ function DevToolsBubbleInner({
                 <>
                   <UserStatus
                     userRole={userRole}
-                    onPress={onStatusPress}
+                    onPress={handleStatusPress}
                     isDragging={isDragging}
                   />
                   <Divider />
@@ -371,6 +443,45 @@ function DevToolsBubbleInner({
         </View>
       </Animated.View>
 
+      {/* Menu Modal - Dynamic based on menuType */}
+      {showMenuModal && menuType === 'dial' && (
+        <DialDevTools
+          onClose={() => setShowMenuModal(false)}
+          onQueryPress={handleQueryPress}
+          onEnvPress={handleEnvPress}
+          onSentryPress={handleDebugPress}
+          onStoragePress={handleStoragePress}
+          onWifiToggle={handleWifiToggle}
+          onNetworkPress={handleNetworkPress}
+          isWifiEnabled={true}
+        />
+      )}
+      
+      {showMenuModal && menuType === 'grid' && (
+        <ClaudeGridMenu
+          onClose={() => setShowMenuModal(false)}
+          onQueryPress={handleQueryPress}
+          onEnvPress={handleEnvPress}
+          onSentryPress={handleDebugPress}
+          onStoragePress={handleStoragePress}
+          onWifiToggle={handleWifiToggle}
+          isWifiEnabled={true}
+        />
+      )}
+      
+      {showMenuModal && menuType === 'dial2' && (
+        <Dial2
+          onClose={() => setShowMenuModal(false)}
+          onQueryPress={handleQueryPress}
+          onEnvPress={handleEnvPress}
+          onSentryPress={handleDebugPress}
+          onStoragePress={handleStoragePress}
+          onWifiToggle={handleWifiToggle}
+          onNetworkPress={handleNetworkPress}
+          isWifiEnabled={true}
+        />
+      )}
+
       {/* Modal for expanded plugin views */}
       {activeModalPlugin?.modalComponent && (
         <Modal
@@ -396,7 +507,9 @@ function DevToolsBubbleInner({
  * Maintains backward compatibility with existing props
  */
 export function DevToolsBubbleWithPlugins(props: DevToolsBubbleProps & { 
-  plugins?: DevToolsPlugin[] 
+  plugins?: DevToolsPlugin[],
+  menuType?: 'dial' | 'grid' | 'dial2',
+  autoShowMenu?: boolean
 }) {
   return (
     <PluginProvider 

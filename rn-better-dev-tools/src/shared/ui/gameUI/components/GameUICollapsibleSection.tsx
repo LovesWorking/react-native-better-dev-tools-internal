@@ -1,15 +1,15 @@
-import React from "react";
+import React from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
-  ViewStyle,
-  TextStyle,
-} from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
-import { ChevronDown, ChevronUp } from "lucide-react-native";
-import { gameUIColors } from "../constants/gameUIColors";
+  type ViewStyle,
+  type TextStyle,
+} from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
+import { ChevronDown, ChevronUp } from 'lucide-react-native';
+import { gameUIColors } from '../constants/gameUIColors';
 
 export interface GameUICollapsibleSectionProps {
   // Icon component from lucide-react-native
@@ -62,12 +62,7 @@ export function GameUICollapsibleSection({
           <View style={styles.headerLeft}>
             <Icon size={14} color={iconColor} />
             <Text style={[styles.title, titleStyle]}>{title}</Text>
-            <View
-              style={[
-                styles.badge,
-                { backgroundColor: iconColor + "20" },
-              ]}
-            >
+            <View style={[styles.badge, { backgroundColor: iconColor + '20' }]}>
               <Text style={[styles.badgeText, { color: iconColor }]}>
                 {count}
               </Text>
@@ -99,30 +94,30 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 4,
     paddingHorizontal: 4,
   },
   headerLeft: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
     flex: 1,
   },
   title: {
     fontSize: 11,
     color: gameUIColors.primary,
-    fontFamily: "monospace",
-    fontWeight: "700",
+    fontFamily: 'monospace',
+    fontWeight: '700',
     letterSpacing: 2,
     opacity: 0.9,
   },
   subtitle: {
     fontSize: 9,
     color: gameUIColors.secondary,
-    fontFamily: "monospace",
+    fontFamily: 'monospace',
     paddingHorizontal: 4,
     marginTop: 2,
     opacity: 0.7,
@@ -134,7 +129,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 10,
-    fontFamily: "monospace",
-    fontWeight: "700",
+    fontFamily: 'monospace',
+    fontWeight: '700',
   },
 });
